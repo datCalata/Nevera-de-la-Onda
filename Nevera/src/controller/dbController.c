@@ -102,7 +102,7 @@ static int charge_db_callback(void *ptr, int argc, char **argv, char** azColName
 			nombre = argv[i];
 		} else if (i == 2) {
 			saldo = atof(argv[i]);
-			user_t* user = createUsuario(id, nombre, saldo);
+			user_t* user = create_usuario(id, nombre, saldo);
 			usuario_list_push_element(lista, user);
 		}
 	}
@@ -118,7 +118,3 @@ static int insert_user_callback(void *NotUsed, int argc, char **argv, char **azC
    printf("\n");
    return 0;
 }
-
-
-
-

@@ -1,12 +1,12 @@
-#include "linkedList.h"
+#include "userlinkedlist.h"
 #define MAX_ID 1000
 
 user_list_t* usuario_list_init(void){
 	user_list_t* cola = (user_list_t*)malloc(sizeof(user_list_t));
 	user_list_t* lista = (user_list_t*)malloc(sizeof(user_list_t));
-	lista->user = createUsuario(0,"CABECERA",0);
+	lista->user = create_usuario(0,"CABECERA",0);
 	lista->next = cola;
-	cola->user = createUsuario(MAX_ID, "COLA", 0);
+	cola->user = create_usuario(MAX_ID, "COLA", 0);
 	cola->next = NULL;
 	return lista;
 }
@@ -16,7 +16,7 @@ int usuario_list_delete(user_list_t * usuario_list){
 	while (usuario_list->next != NULL) {
 		aux = usuario_list->next;
 		usuario_list->next = aux->next;
-		deleteUsuario(aux->user);
+		delete_usuario(aux->user);
 		free(aux);
 	}
 	free(usuario_list);
@@ -31,7 +31,7 @@ int usuario_list_push_element(user_list_t* usuario_list, user_t * user){
 	user_list_t* entry = (user_list_t*)malloc(sizeof(user_list_t));
 	user_list_t* actual = usuario_list;
 	user_list_t* siguiente = usuario_list->next;
-	
+
 	while (user->id > siguiente->user->id) {
 	    actual = siguiente;
 		siguiente = actual->next;
@@ -61,7 +61,7 @@ user_t* usuario_list_search(user_list_t* usuario_list, int id){
 void usuario_list_print(user_list_t* usuario_list){
 	user_list_t* aux = usuario_list;
 	while(aux != NULL){
-		printUsuario(aux->user);
+		print_usuario(aux->user);
 		aux = aux->next;
 	}
 }

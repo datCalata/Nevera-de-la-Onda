@@ -1,5 +1,5 @@
-#ifndef USUARIOS_H_
-#define USUARIOS_H_
+#ifndef SRC_MODEL_USUARIOS_H_
+#define SRC_MODEL_USUARIOS_H_
 
 
 
@@ -11,10 +11,12 @@ typedef struct usuario{
 	float saldo;
 }user_t;
 
-user_t* createUsuario(int id, char* nombre, float saldo);
-void setUsuarioName(user_t* user, char* nombre);
-void setUsuarioMoney(user_t* user, float saldo);
-void addSaldo(user_t* user, float cantidad);
-void deleteUsuario(user_t* user);
-void printUsuario(user_t* user);
+//TODO reformat names
+
+user_t* create_usuario(int id, char* nombre, float saldo);
+void set_usuario_name(user_t* user, char* nombre);
+void set_usuario_balance(user_t* user, float saldo);
+void add_saldo(user_t* user, float cantidad);
+void delete_usuario(user_t* user);
+void print_usuario(user_t* user);
 #endif // !USUARIOS_H_

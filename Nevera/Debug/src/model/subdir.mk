@@ -4,15 +4,21 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/model/linkedList.c \
+../src/model/productlinkedlist.c \
+../src/model/producto.c \
+../src/model/userlinkedlist.c \
 ../src/model/usuarios.c 
 
 OBJS += \
-./src/model/linkedList.o \
+./src/model/productlinkedlist.o \
+./src/model/producto.o \
+./src/model/userlinkedlist.o \
 ./src/model/usuarios.o 
 
 C_DEPS += \
-./src/model/linkedList.d \
+./src/model/productlinkedlist.d \
+./src/model/producto.d \
+./src/model/userlinkedlist.d \
 ./src/model/usuarios.d 
 
 

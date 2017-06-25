@@ -1,10 +1,11 @@
 #ifndef DBCONTROLLER_H_
 #define DBCONTROLLER_H_
 
-#include "../model/linkedList.h"
 #include "../model/usuarios.h"
 #include <sqlite3.h>
 #include <stdio.h>
+
+#include "../model/userlinkedlist.h"
 
 
 sqlite3* load_db(user_list_t* list);

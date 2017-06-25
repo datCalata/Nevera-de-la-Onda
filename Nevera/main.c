@@ -8,11 +8,12 @@
 #include <stdlib.h>
 #include <wiringPi.h>
 #include <sqlite3.h>
-#include "src/model/linkedList.h"
 #include "src/model/usuarios.h"
 #include <string.h>
 #include "src/controller/dbController.h"
+#include "src/model/userlinkedlist.h"
 int n = 0;
+
 
 
 int main() {
@@ -24,7 +25,7 @@ int main() {
 	db = load_db(lista);
 	usuario_list_print(lista);
 
-	user = createUsuario(usuario_list_get_max_id(lista)+1,"Prueba",100);
+	user = create_usuario(usuario_list_get_max_id(lista)+1,"Prueba",100);
 	usuario_list_push_element(lista, user);
 	usuario_list_print(lista);
 	write_user_list_db(db,lista);
