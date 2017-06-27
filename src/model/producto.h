@@ -8,7 +8,10 @@
 #ifndef SRC_MODEL_PRODUCTO_H_
 #define SRC_MODEL_PRODUCTO_H_
 
-#include "producto.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 
 typedef struct producto{
 	int id;

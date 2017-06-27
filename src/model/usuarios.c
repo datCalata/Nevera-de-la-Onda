@@ -1,7 +1,4 @@
 #include "usuarios.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 
 user_t* create_usuario(int id, char* nombre, float saldo) {

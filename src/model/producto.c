@@ -1,7 +1,5 @@
 #include "producto.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+
 
 product_t* create_producto(int id, char* nombre, int stock){
 	product_t* product = (product_t*)malloc(sizeof(product_t));

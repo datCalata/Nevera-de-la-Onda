@@ -1,6 +1,5 @@
 #include "dbController.h"
-#include <string.h>
-#include <stdlib.h>
+
 //Internal Functions
 void charge_db(sqlite3* db,user_list_t* list);
 

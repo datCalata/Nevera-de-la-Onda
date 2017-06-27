@@ -16,4 +16,5 @@ SUBDIRS := \
 . \
 src/controller \
 src/model \
+src/view \
 

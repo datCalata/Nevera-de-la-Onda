@@ -6,76 +6,65 @@
 #include <string.h>
 #include "src/controller/dbController.h"
 #include "src/model/userlinkedlist.h"
-
-
-#define GPIO_R1 29
-#define GPIO_R2 31
-#define GPIO_R3 33
-#define GPIO_R4 37
-
-#define GPIO_C1 32
-#define GPIO_C2 36
-#define GPIO_C3 38
-#define GPIO_C4 40
-
-#define MAX_PIN 4
+#include "src/controller/keypad.h"
+#include "src/view/lcd.h"
 
 int main() {
 
-	int row_pin[] = {GPIO_R1,GPIO_R2,GPIO_R3,GPIO_R4};
-	int col_pin[] = {GPIO_C1,GPIO_C2,GPIO_C3,GPIO_C4};
-	char key[MAX_PIN][MAX_PIN];
-	key[0][0] = '1';
-	key[0][1] = '2';
-	key[0][2] = '3';
-	key[0][3] = 'A';
-	key[1][0] = '4';
-	key[1][1] = '5';
-	key[1][2] = '6';
-	key[1][3] = 'B';
-	key[2][0] = '7';
-	key[2][1] = '8';
-	key[2][2] = '9';
-	key[2][3] = 'C';
-	key[3][0] = '*';
-	key[3][1] = '0';
-	key[3][2] = '#';
-	key[3][3] = 'D';
+	if (wiringPiSetup() == -1) exit(1);
 
-	int i, j;
+	fd = wiringPiI2CSetup(I2C_ADDR);
 
-	wiringPiSetupPhys();
+	//printf("fd = %d ", fd);
 
-	for (i = 0; i < MAX_PIN; i++){
-			pinMode(col_pin[i], INPUT);
-			pullUpDnControl(col_pin[i], PUD_UP);
+	lcd_init(); // setup LCD
+
+	char array1[] = "Hello world!";
+
+	while (1) {
+		lcdLoc(LINE3);
+		typeln("Hola");
+		delay(4000);
+		lcdLoc(LINE1);
+		typeln("Using wiringPi");
+		lcdLoc(LINE2);
+		typeln("Geany editor.");
+
+		delay(2000);
+		ClrLcd();
+		lcdLoc(LINE1);
+		typeln("I2c  Programmed");
+		lcdLoc(LINE2);
+		typeln("in C not Python.");
+
+		delay(2000);
+		ClrLcd();
+		lcdLoc(LINE1);
+		typeln("Arduino like");
+		lcdLoc(LINE2);
+		typeln("fast and easy.");
+
+		delay(2000);
+		ClrLcd();
+		lcdLoc(LINE1);
+		typeln(array1);
+
+		delay(2000);
+		ClrLcd(); // defaults LINE1
+		typeln("Int  ");
+		int value = 20125;
+		typeInt(value);
+
+		delay(2000);
+		lcdLoc(LINE2);
+		typeln("Float ");
+		float FloatVal = 10045.25989;
+		typeFloat(FloatVal);
+		delay(2000);
 	}
 
-	for (i = 0; i < MAX_PIN; i++){
-			pinMode(row_pin[i], INPUT);
-			pullUpDnControl(row_pin[i], PUD_OFF);
-	}
 
-	while (1){
-			for (i = 0; i < MAX_PIN; i++){
-				pinMode(row_pin[i], OUTPUT);
-				digitalWrite(row_pin[i], LOW);
-
-				for(j = 0; j <	MAX_PIN; j++){
-					if (!digitalRead(col_pin[j])){
-						printf("%c \n",key[i][j]);
-						fflush(stdout);
-						while(!digitalRead(col_pin[j])){
-							delay(1);
-						}
-					}
-				}
-
-				pinMode(row_pin[i], INPUT);
-				pullUpDnControl(row_pin[i], PUD_OFF);
-			}
-		}
-
+	return EXIT_SUCCESS;
 }
 
 

@@ -1,6 +1,9 @@
 #ifndef SRC_MODEL_USUARIOS_H_
 #define SRC_MODEL_USUARIOS_H_
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 
 #define NAMESIZE 50;
