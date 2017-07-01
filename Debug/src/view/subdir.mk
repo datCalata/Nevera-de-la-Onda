@@ -4,15 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../src/view/keypad.c \
+../src/view/display.c \
 ../src/view/lcd.c 
 
 OBJS += \
-./src/view/keypad.o \
+./src/view/display.o \
 ./src/view/lcd.o 
 
 C_DEPS += \
-./src/view/keypad.d \
+./src/view/display.d \
 ./src/view/lcd.d 
 
 

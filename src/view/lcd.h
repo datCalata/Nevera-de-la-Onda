@@ -27,7 +27,7 @@
 
 
 #define LCD_BACKLIGHT   0x08  // On
-// LCD_BACKLIGHT = 0x00  # Off
+//#define LCD_BACKLIGHT  0x00  // Off
 
 #define ENABLE  0b00000100 // Enable bit
 

@@ -1,13 +1,14 @@
 #include "dbController.h"
 
 //Internal Functions
-void charge_db(sqlite3* db,user_list_t* list);
+void charge_db(sqlite3* db,user_list_t* user_list,product_list_t* product_list);
 
 //CALLBACKS
-static int charge_db_callback(void *ptr, int argc, char **argv, char** azColName);
+static int charge_user_db_callback(void *ptr, int argc, char **argv, char** azColName);
+static int charge_product_db_callback(void *ptr, int argc, char **argv, char** azColName);
 static int insert_user_callback(void *NotUsed, int argc, char **argv, char **azColName);
 
-sqlite3* load_db(user_list_t* list){
+sqlite3* load_db(user_list_t* user_list,product_list_t* product_list){
 	sqlite3* db;
 	int rc;
 
@@ -16,7 +17,7 @@ sqlite3* load_db(user_list_t* list){
 		return NULL;
 	}
 	fprintf(stdout,"Base de datos abierta \n");
-	charge_db(db,list);
+	charge_db(db,user_list,product_list);
 
 	return db;
 }
@@ -70,11 +71,19 @@ int write_user_list_db(sqlite3* db,user_list_t* list){
 
 //In file Functions
 
-void charge_db(sqlite3* db, user_list_t* list){
+void charge_db(sqlite3* db, user_list_t* user_list,product_list_t* product_list){
 	char* sql = "SELECT * FROM usuarios";
 	char* z_err_msg = NULL;
 
-	if(sqlite3_exec(db,sql,charge_db_callback,list,&z_err_msg) != SQLITE_OK){
+	if(sqlite3_exec(db,sql,charge_user_db_callback,user_list,&z_err_msg) != SQLITE_OK){
+		fprintf(stderr, "SQL error: %s\n", z_err_msg);
+		sqlite3_free(z_err_msg);
+		return;
+	}
+
+	sql = "SELECT * FROM productos";
+
+	if(sqlite3_exec(db,sql,charge_product_db_callback,product_list,&z_err_msg) != SQLITE_OK){
 		fprintf(stderr, "SQL error: %s\n", z_err_msg);
 		sqlite3_free(z_err_msg);
 		return;
@@ -85,7 +94,7 @@ void charge_db(sqlite3* db, user_list_t* list){
 
 //CALLBACK FUNTIONS
 
-static int charge_db_callback(void *ptr, int argc, char **argv, char** azColName){
+static int charge_user_db_callback(void *ptr, int argc, char **argv, char** azColName){
 	int i;
 	int id;
 	char* nombre;
@@ -103,6 +112,30 @@ static int charge_db_callback(void *ptr, int argc, char **argv, char** azColName
 			saldo = atof(argv[i]);
 			user_t* user = create_usuario(id, nombre, saldo);
 			usuario_list_push_element(lista, user);
+		}
+	}
+	printf("\n");
+	return 0;
+}
+
+static int charge_product_db_callback(void *ptr, int argc, char **argv, char** azColName){
+	int i;
+	int id;
+	char* nombre;
+	int stock;
+	product_list_t* lista = (product_list_t*) ptr;
+
+
+	for (i = 0; i < argc; i++) {
+		//printf("%s = %s\n", azColName[i], argv[i]);
+		if (i == 0) {
+			id = atoi(argv[i]);
+		} else if (i == 1) {
+			nombre = argv[i];
+		} else if (i == 2) {
+			stock = atoi(argv[i]);
+			product_t* product = create_producto(id, nombre, stock);
+			producto_list_push_element(lista,product);
 		}
 	}
 	printf("\n");

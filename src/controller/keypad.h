@@ -12,6 +12,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include "../view/display.h"
+#include "../threads.h"
+
 
 #define MAX_PIN 4
 
@@ -32,6 +35,8 @@ int col_pin[MAX_PIN];
 
 char* scan_key();
 char* scan_chain(int max_length);
+char* scan_chain_stop(int max_length);
 void set_up_keypad();
+void* scan_key_thread();
 
 #endif /* SRC_VIEW_KEYPAD_H_ */
