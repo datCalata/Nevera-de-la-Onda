@@ -69,6 +69,15 @@ int write_user_list_db(sqlite3* db,user_list_t* list){
 	return 0;
 }
 
+//TODO: escribir en la base de datos de productos
+
+int write_productos_list_db(sqlite3* db,product_list_t* list){
+	product_list_t aux = list->next;
+	while(producto_list_has_next(aux)){
+
+	}
+}
+
 //In file Functions
 
 void charge_db(sqlite3* db, user_list_t* user_list,product_list_t* product_list){

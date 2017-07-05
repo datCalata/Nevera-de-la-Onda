@@ -13,10 +13,10 @@
 
 
 // PIN de LED: el PIN 0 de wiringPi es BCM_GPIO 17.
-// hemos tenido que usar la numeración de BCM al inicializar con wiringPiSetupSys
-// cuando elige un número PIN diferente, use la numeración de BCM, también
-// en Páginas de propiedades, seleccione Eventos de compilación > Evento remoto posterior a la compilación y actualice el comando.
-// que utiliza la exportación de gpio para la configuración de wiringPiSetupSys
+// hemos tenido que usar la numeraciï¿½n de BCM al inicializar con wiringPiSetupSys
+// cuando elige un nï¿½mero PIN diferente, use la numeraciï¿½n de BCM, tambiï¿½n
+// en Pï¿½ginas de propiedades, seleccione Eventos de compilaciï¿½n > Evento remoto posterior a la compilaciï¿½n y actualice el comando.
+// que utiliza la exportaciï¿½n de gpio para la configuraciï¿½n de wiringPiSetupSys
 #define	LED	4
 
 #include <wiringPiI2C.h>
@@ -30,10 +30,10 @@
 #include "src/controller/dbController.h"
 #include "src/controller/keypad.h"
 #include "src/view/display.h"
-
+#include "src/controller/nevera_controller.h"
 
 void tmp_test(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db);
-void setup(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db);
+void setup(product_list_t** productos_lista,user_list_t** usuarios_lista,sqlite3** db);
 void kill(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db);
 
 /*int main() {
@@ -83,6 +83,7 @@ void kill(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* d
 }*/
 
 
+extern fsm_trans_t nevera_transition_table[];
 
 
 int main() {
@@ -91,38 +92,21 @@ int main() {
 	user_list_t* usuarios_lista = NULL;
 	sqlite3* db = NULL;
 
-	wiringPiSetupPhys();
-
-	set_up_keypad();
 
 
-	fd = wiringPiI2CSetup(I2C_ADDR);
+	fsm_t* fsm = (fsm_t*) new_nevera_fsm(nevera_transition_table);
 
-	lcd_init();
+	while(1){
+		fsm_fire(fsm);
+	}
 
-	productos_lista = producto_list_init();
-	usuarios_lista = usuario_list_init();
-	db = load_db(usuarios_lista, productos_lista);
+	setup(&productos_lista,&usuarios_lista,&db);
 	printf("setUp done");
 	fflush(stdout);
 
-	int i = 0;
-	char* intro;
+	tmp_test(productos_lista,usuarios_lista,db);
 
-	for(i = 1; ;i += 3){
-		if(i >= producto_list_get_max_id(productos_lista)){
-			i = 1;
-		}
-		display_buy_menu(productos_lista,i);
-		intro = scan_chain_stop(10);
-		if(strcmp(intro,"*") != 0){
-			break;
-		}
-	}
-
-	close_db(db);
-	usuario_list_delete(usuarios_lista);
-	producto_list_delete(productos_lista);
+	kill(productos_lista,usuarios_lista,db);
 
 	printf("recursos liberados");
 	fflush(stdout);
@@ -130,7 +114,7 @@ int main() {
 	return EXIT_SUCCESS;
 }
 
-void setup(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db){
+void setup(product_list_t** productos_lista,user_list_t** usuarios_lista,sqlite3** db){
 	wiringPiSetupPhys();
 	fd = wiringPiI2CSetup(I2C_ADDR);
 
@@ -138,9 +122,9 @@ void setup(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* 
 	lcd_init();
 
 
-	productos_lista = producto_list_init();
-	usuarios_lista = usuario_list_init();
-	db = load_db(usuarios_lista, productos_lista);
+	*productos_lista = producto_list_init();
+	*usuarios_lista = usuario_list_init();
+	*db = load_db(*usuarios_lista,*productos_lista);
 	printf("setUp done");
 	fflush(stdout);
 }
@@ -155,13 +139,17 @@ void tmp_test(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite
 
 	int i = 0;
 	char* intro;
+	int max = producto_list_get_max_id(productos_lista);
 
-	for(i = 1; i < producto_list_get_max_id(productos_lista);i += 3){
+	for(i = 1;  ;i += 3){
+		if(i > max)
+			i = 1;
+
 		display_buy_menu(productos_lista,i);
 		intro = scan_chain_stop(10);
-		if(strcmp(intro,"*") != 0){
+		if(strcmp(intro,"*") != 0)
 			break;
-		}
+
 	}
 }
 

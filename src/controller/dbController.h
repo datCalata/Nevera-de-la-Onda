@@ -18,4 +18,7 @@ int insert_db_product(sqlite3* db);
 int delete_db_product(sqlite3* db);
 int write_user_list_db(sqlite3* db,user_list_t* list);
 
+//TODO: hacerla
+int commit_db(sqlite3* db, user_list_t* lista_usuarios, product_list_t* lista_productos);
+
 #endif
