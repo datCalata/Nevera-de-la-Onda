@@ -93,7 +93,6 @@ int main() {
 	sqlite3* db = NULL;
 
 
-
 	fsm_t* fsm = (fsm_t*) new_nevera_fsm(nevera_transition_table);
 
 	while(1){

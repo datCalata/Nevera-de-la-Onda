@@ -38,5 +38,7 @@ char* scan_chain(int max_length);
 char* scan_chain_stop(int max_length);
 void set_up_keypad();
 void* scan_key_thread();
+int scan_num();
+float scan_float();
 
 #endif /* SRC_VIEW_KEYPAD_H_ */

@@ -5,9 +5,9 @@
 product_list_t* producto_list_init(void){
 	product_list_t* cola =  (product_list_t*)malloc(sizeof(product_list_t));
 	product_list_t* lista =  (product_list_t*)malloc(sizeof(product_list_t));
-	lista->product = create_producto(0, "CABECERA", 0);
+	lista->product = create_producto(0, "CABECERA",0.0, 0);
 	lista->next = cola;
-	cola->product = create_producto(MAX_ID,"COLA",0);
+	cola->product = create_producto(MAX_ID,"COLA",0.0,0);
 	cola->next = NULL;
 	return lista;
 }

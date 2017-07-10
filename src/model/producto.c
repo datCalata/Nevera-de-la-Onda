@@ -1,7 +1,7 @@
 #include "producto.h"
 
 
-product_t* create_producto(int id, char* nombre, int stock){
+product_t* create_producto(int id, char* nombre,float precio, int stock){
 	product_t* product = (product_t*)malloc(sizeof(product_t));
 	char* name = (char*)malloc(50*sizeof(char));
 	if (product == NULL) {
@@ -11,6 +11,7 @@ product_t* create_producto(int id, char* nombre, int stock){
 	strcpy(name,nombre);
 	product->id = id;
 	product->nombre = name;
+	product->precio = precio;
 	product->stock = stock;
 	return product;
 }
@@ -44,4 +45,8 @@ void delete_producto(product_t* product){
 }
 void print_producto(product_t* product){
 	printf("%d %s %d \n",product->id,product->nombre,product->stock);
+}
+
+float producto_get_precio(product_t* product){
+	return product->precio;
 }

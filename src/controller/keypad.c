@@ -58,10 +58,51 @@ char* scan_chain(int max_length) {
 	return chain;
 }
 
+int scan_num(){
+	char* chain = (char*)malloc(5*sizeof(char));
+	int num = 0;
+	strcpy(chain,"");
+	char* tmp;
+	while (!strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
+		if(!strcmp(tmp,"B") && !strcmp(tmp,"C") && !strcmp(tmp,"#") && !strcmp(tmp,"*")){
+			strcat(chain, tmp);
+		}else if(strcmp(tmp,"D")){
+			chain[strlen(chain)-1]="\0";
+		}
+		printf("Lleva presionado %s \n",chain);
+		free(tmp);
+	}
+	num = atoi(chain);
+	free(chain);
+	return num;
+}
+
+float scan_float(){
+	char* chain = (char*)malloc(5*sizeof(char));
+	float num = 0;
+	strcpy(chain,"");
+	char* tmp;
+	while (!strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
+		if(!strcmp(tmp,"B") && !strcmp(tmp,"C") && !strcmp(tmp,"#")){
+			strcat(chain, tmp);
+		}else if(strcmp(tmp,"D")){
+			chain[strlen(chain)-1]="\0";
+		}else if(strcmp(tmp,"*")){
+			strcat(chain,".");
+		}
+		printf("Lleva presionado %s \n",chain);
+		free(tmp);
+	}
+	num = atof(chain);
+	free(chain);
+	return num;
+}
+
+
 char* scan_chain_stop(int max_length) {
 	char* chain = (char*)malloc(max_length*sizeof(char));
 	char* tmp;
-	char* displn;
+	char* displn = (char*)malloc(21*sizeof(char));
 	int cmp;
 
 	strcpy(chain,"");
@@ -81,6 +122,7 @@ char* scan_chain_stop(int max_length) {
 		fflush(stdout);
 		free(tmp);
 	}
+	free(displn);
 	return chain;
 }
 

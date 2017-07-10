@@ -19,12 +19,15 @@
 #include "../controller/keypad.h"
 
 #define FORMAT_BUY "%d) %s"
+#define FORMAT_CHECK_MONEY_1 "%s tiene:"
+#define FORMAT_CHECK_MONEY_2 "%2.2f Euros"
 
 void display_init();
 void display_user_menu();
 void display_options_menu();
 void display_user_menu();
 void display_add_money_menu(int total);
+void display_check_money_menu(user_t* usuario);
 void display_buy_menu(void *t,int current_id);
 void display_write_last(char* line);
 void display_clear();

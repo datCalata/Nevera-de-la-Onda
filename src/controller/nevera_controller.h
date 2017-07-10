@@ -11,8 +11,10 @@
 #include "fsm.h"
 #include "dbController.h"
 #include "../model/userlinkedlist.h"
+#include "../model/usuarios.h"
 #include "../model/productlinkedlist.h"
 #include "../view/display.h"
+
 
 typedef enum fsm_state{
 	//TODO: add estados
@@ -26,16 +28,13 @@ typedef enum fsm_state{
 }fsm_state_t;
 
 typedef struct nevera_fsm{
-	fsm_t fsm;
+	fsm_t* fsm;
 	sqlite3* db;
-	user_list_t lista_usuarios;
-	product_list_t lista_productos;
-	char intro[50];
-	int option_accepted;
+	user_list_t* lista_usuarios;
+	product_list_t* lista_productos;
+	user_t* user_selected;
+	char* intro;
 	int option_selected;
-	int user_id_selected;
-	int return_to_wait_for_user;
-	int return_to_wait_for_option;
 }nevera_fsm_t;
 
 nevera_fsm_t* new_nevera_fsm(fsm_trans_t* nevera_transition_table);

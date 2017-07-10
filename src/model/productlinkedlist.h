@@ -24,6 +24,7 @@ product_t* producto_list_search(product_list_t* producto_list,int id);
 void producto_list_print(product_list_t* producto_list);
 int producto_list_get_max_id(product_list_t* producto_list);
 
+
 //Metodos de iteracion y acceso externo
 int producto_list_has_next(product_list_t* producto_list);
 product_list_t* producto_list_next(product_list_t* producto_list);

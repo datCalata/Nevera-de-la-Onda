@@ -56,6 +56,11 @@ void close_db(sqlite3* db){
 	sqlite3_close(db);
 }
 
+int commit_db(sqlite3* db, user_list_t* lista_usuarios, product_list_t* lista_productos){
+	write_user_list_db(db,lista_usuarios);
+	return 1;
+}
+
 int write_user_list_db(sqlite3* db,user_list_t* list){
 	//aux apunta al segundo elemento porque el primero es la cabecera de la lista
 	user_list_t* aux = list->next;
@@ -69,10 +74,12 @@ int write_user_list_db(sqlite3* db,user_list_t* list){
 	return 0;
 }
 
+
+
 //TODO: escribir en la base de datos de productos
 
 int write_productos_list_db(sqlite3* db,product_list_t* list){
-	product_list_t aux = list->next;
+	product_list_t* aux = list->next;
 	while(producto_list_has_next(aux)){
 
 	}
@@ -131,6 +138,7 @@ static int charge_product_db_callback(void *ptr, int argc, char **argv, char** a
 	int i;
 	int id;
 	char* nombre;
+	float precio;
 	int stock;
 	product_list_t* lista = (product_list_t*) ptr;
 
@@ -142,8 +150,10 @@ static int charge_product_db_callback(void *ptr, int argc, char **argv, char** a
 		} else if (i == 1) {
 			nombre = argv[i];
 		} else if (i == 2) {
+			precio = atof(argv[i]);
+		} else if(i == 3){
 			stock = atoi(argv[i]);
-			product_t* product = create_producto(id, nombre, stock);
+			product_t* product = create_producto(id, nombre,precio, stock);
 			producto_list_push_element(lista,product);
 		}
 	}

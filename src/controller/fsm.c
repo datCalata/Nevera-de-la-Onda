@@ -5,7 +5,7 @@
  *      Author: calata
  */
 
-#include "fsm.c"
+#include "fsm.h"
 
 
 fsm_t* fsm_new (fsm_trans_t* tt){
