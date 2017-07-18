@@ -59,15 +59,25 @@ char* scan_chain(int max_length) {
 }
 
 int scan_num(){
-	char* chain = (char*)malloc(5*sizeof(char));
+	char* chain = (char*)malloc(sizeof(char)*5);
 	int num = 0;
-	strcpy(chain,"");
+	int i = 0;
 	char* tmp;
-	while (!strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
-		if(!strcmp(tmp,"B") && !strcmp(tmp,"C") && !strcmp(tmp,"#") && !strcmp(tmp,"*")){
+	strcpy(chain,"");
+	while (strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
+		if(strcmp(tmp,"B") && strcmp(tmp,"C") && strcmp(tmp,"#") && strcmp(tmp,"*") && strcmp(tmp,"D")){
 			strcat(chain, tmp);
-		}else if(strcmp(tmp,"D")){
-			chain[strlen(chain)-1]="\0";
+		}else if(!strcmp(tmp,"D")){
+			char* tp = (char*)malloc(sizeof(char)*5);
+			char* result_str = (char*)malloc(2*sizeof(char));
+			strcpy(tp,"");
+			for(i = 0; i < strlen(chain)-1;i++){
+				result_str[0] = chain[i];
+				result_str[1] = '\0';
+				strcat(tp,result_str);
+			}
+			free(chain);
+			chain = tp;
 		}
 		printf("Lleva presionado %s \n",chain);
 		free(tmp);
@@ -80,14 +90,26 @@ int scan_num(){
 float scan_float(){
 	char* chain = (char*)malloc(5*sizeof(char));
 	float num = 0;
-	strcpy(chain,"");
 	char* tmp;
-	while (!strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
-		if(!strcmp(tmp,"B") && !strcmp(tmp,"C") && !strcmp(tmp,"#")){
+	int i;
+
+	strcpy(chain,"");
+
+	while (strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
+		if(strcmp(tmp,"B") && strcmp(tmp,"C") && strcmp(tmp,"#") && strcmp(tmp,"D") && strcmp(tmp,"*")){
 			strcat(chain, tmp);
-		}else if(strcmp(tmp,"D")){
-			chain[strlen(chain)-1]="\0";
-		}else if(strcmp(tmp,"*")){
+		}else if(!strcmp(tmp,"D")){
+			char* tp = (char*)malloc(sizeof(char)*5);
+			char* result_str = (char*)malloc(2*sizeof(char));
+			strcpy(tp,"");
+			for(i = 0; i < strlen(chain)-1;i++){
+				result_str[0] = chain[i];
+				result_str[1] = '\0';
+				strcat(tp,result_str);
+			}
+			free(chain);
+			chain = tp;
+		}else if(!strcmp(tmp,"*")){
 			strcat(chain,".");
 		}
 		printf("Lleva presionado %s \n",chain);

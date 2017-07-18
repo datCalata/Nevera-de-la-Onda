@@ -46,8 +46,8 @@ fsm_trans_t nevera_transition_table[] = {
 
 nevera_fsm_t* new_nevera_fsm(fsm_trans_t* nevera_transition_table){
 	nevera_fsm_t* nevera_fsm = (nevera_fsm_t*)malloc(sizeof(nevera_fsm_t));
-	nevera_fsm->fsm = fsm_new(nevera_transition_table);
-	nevera_fsm->fsm->current_state = START;
+	nevera_fsm->fsm.tt = nevera_transition_table;
+	nevera_fsm->fsm.current_state = START;
 	nevera_fsm->lista_usuarios = usuario_list_init();
 	nevera_fsm->lista_productos  = producto_list_init();
 	nevera_fsm->db = load_db(nevera_fsm->lista_usuarios,nevera_fsm->lista_productos);
@@ -55,11 +55,11 @@ nevera_fsm_t* new_nevera_fsm(fsm_trans_t* nevera_transition_table){
 }
 
 int delete_nevera_fsm(nevera_fsm_t* nevera_fsm){
-	fsm_delete(nevera_fsm->fsm);
 	commit_db(nevera_fsm->db,nevera_fsm->lista_usuarios,nevera_fsm->lista_productos);
 	close_db(nevera_fsm->db);
 	usuario_list_delete(nevera_fsm->lista_usuarios);
 	producto_list_delete(nevera_fsm->lista_productos);
+	free(nevera_fsm);
 	return 0;
 }
 
@@ -111,6 +111,7 @@ static void output_func_wait_for_user(fsm_t* fsm){
 		display_user_menu();
 		nevera->intro = scan_chain(10);
 		nevera->user_selected = usuario_list_search(nevera->lista_usuarios,atoi(nevera->intro));
+		nevera->option_selected = -1;
 		nevera->intro = "";
 }
 

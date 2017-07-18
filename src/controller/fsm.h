@@ -8,6 +8,8 @@
 #ifndef SRC_CONTROLLER_FSM_H_
 #define SRC_CONTROLLER_FSM_H_
 
+#include <stdlib.h>
+
 typedef struct fsm_ fsm_t;
 
 typedef int (*fsm_input_func_t)(fsm_t*);

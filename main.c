@@ -33,7 +33,7 @@
 #include "src/controller/nevera_controller.h"
 
 void tmp_test(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db);
-void setup(product_list_t** productos_lista,user_list_t** usuarios_lista,sqlite3** db);
+void setup();
 void kill(product_list_t* productos_lista,user_list_t* usuarios_lista,sqlite3* db);
 
 /*int main() {
@@ -88,18 +88,20 @@ extern fsm_trans_t nevera_transition_table[];
 
 int main() {
 
-	product_list_t* productos_lista = NULL;
+	/*product_list_t* productos_lista = NULL;
 	user_list_t* usuarios_lista = NULL;
-	sqlite3* db = NULL;
+	sqlite3* db = NULL;*/
 
+	setup();
 
 	fsm_t* fsm = (fsm_t*) new_nevera_fsm(nevera_transition_table);
+
 
 	while(1){
 		fsm_fire(fsm);
 	}
 
-	setup(&productos_lista,&usuarios_lista,&db);
+	/*setup(&productos_lista,&usuarios_lista,&db);
 	printf("setUp done");
 	fflush(stdout);
 
@@ -108,22 +110,18 @@ int main() {
 	kill(productos_lista,usuarios_lista,db);
 
 	printf("recursos liberados");
-	fflush(stdout);
+	fflush(stdout);*/
 
 	return EXIT_SUCCESS;
 }
 
-void setup(product_list_t** productos_lista,user_list_t** usuarios_lista,sqlite3** db){
+void setup(){
 	wiringPiSetupPhys();
 	fd = wiringPiI2CSetup(I2C_ADDR);
 
 	set_up_keypad();
 	lcd_init();
 
-
-	*productos_lista = producto_list_init();
-	*usuarios_lista = usuario_list_init();
-	*db = load_db(*usuarios_lista,*productos_lista);
 	printf("setUp done");
 	fflush(stdout);
 }

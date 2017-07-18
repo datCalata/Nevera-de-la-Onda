@@ -24,11 +24,11 @@ typedef enum fsm_state{
 	ADD_MONEY = 3,
 	CHECK_MONEY = 4,
 	BUY_SOMETHING = 5,
-	ADD_PRODUCT = 6,
+	ADD_PRODUCT = 6
 }fsm_state_t;
 
 typedef struct nevera_fsm{
-	fsm_t* fsm;
+	fsm_t fsm;
 	sqlite3* db;
 	user_list_t* lista_usuarios;
 	product_list_t* lista_productos;
