@@ -8,6 +8,7 @@
 #include "keypad.h"
 
 void debounce_delay(int debounce,int pin);
+void output_chain(char* chain);
 
 void debounce_delay(int debounce, int pin){
 	while (!digitalRead(col_pin[pin])) {
@@ -47,27 +48,14 @@ char* scan_key() {
 }
 
 char* scan_chain(int max_length) {
+	int i = 0;
 	char* chain = (char*)malloc(max_length*sizeof(char));
 	strcpy(chain,"");
 	char* tmp;
 	while (strcmp((tmp = scan_key()), "A") != 0 && strlen(chain) < max_length) {
-		strcat(chain, tmp);
-		printf("Lleva presionado %s \n",chain);
-		free(tmp);
-	}
-	return chain;
-}
-
-int scan_num(){
-	char* chain = (char*)malloc(sizeof(char)*5);
-	int num = 0;
-	int i = 0;
-	char* tmp;
-	strcpy(chain,"");
-	while (strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
 		if(strcmp(tmp,"B") && strcmp(tmp,"C") && strcmp(tmp,"#") && strcmp(tmp,"*") && strcmp(tmp,"D")){
 			strcat(chain, tmp);
-		}else if(!strcmp(tmp,"D")){
+		}else if(!strcmp(tmp,"D") && strlen(chain) > 0){
 			char* tp = (char*)malloc(sizeof(char)*5);
 			char* result_str = (char*)malloc(2*sizeof(char));
 			strcpy(tp,"");
@@ -79,9 +67,17 @@ int scan_num(){
 			free(chain);
 			chain = tp;
 		}
-		printf("Lleva presionado %s \n",chain);
+		output_chain(chain);
 		free(tmp);
 	}
+	return chain;
+}
+
+int scan_num(){
+	char* chain = (char*)malloc(sizeof(char)*5);
+	int num = 0;
+	strcpy(chain,"");
+	chain = scan_chain(10);
 	num = atoi(chain);
 	free(chain);
 	return num;
@@ -94,7 +90,6 @@ float scan_float(){
 	int i;
 
 	strcpy(chain,"");
-
 	while (strcmp((tmp = scan_key()), "A") && strlen(chain) < 5) {
 		if(strcmp(tmp,"B") && strcmp(tmp,"C") && strcmp(tmp,"#") && strcmp(tmp,"D") && strcmp(tmp,"*")){
 			strcat(chain, tmp);
@@ -112,7 +107,7 @@ float scan_float(){
 		}else if(!strcmp(tmp,"*")){
 			strcat(chain,".");
 		}
-		printf("Lleva presionado %s \n",chain);
+		output_chain(chain);
 		free(tmp);
 	}
 	num = atof(chain);
@@ -124,8 +119,8 @@ float scan_float(){
 char* scan_chain_stop(int max_length) {
 	char* chain = (char*)malloc(max_length*sizeof(char));
 	char* tmp;
-	char* displn = (char*)malloc(21*sizeof(char));
 	int cmp;
+	int i = 0;
 
 	strcpy(chain,"");
 
@@ -137,14 +132,24 @@ char* scan_chain_stop(int max_length) {
 			fflush(stdout);
 			return tmp;
 		}
-		strcat(chain, tmp);
-		printf("Lleva presionado %s \n",chain);
-		sprintf(displn,"Ha elegido: %s",chain);
-		display_write_last(displn);
+		if(strcmp(tmp,"B") && strcmp(tmp,"C") && strcmp(tmp,"#") && strcmp(tmp,"*") && strcmp(tmp,"D")){
+					strcat(chain, tmp);
+				}else if(!strcmp(tmp,"D")){
+					char* tp = (char*)malloc(sizeof(char)*5);
+					char* result_str = (char*)malloc(2*sizeof(char));
+					strcpy(tp,"");
+					for(i = 0; i < strlen(chain)-1;i++){
+						result_str[0] = chain[i];
+						result_str[1] = '\0';
+						strcat(tp,result_str);
+					}
+					free(chain);
+					chain = tp;
+		}
+		output_chain(chain);
 		fflush(stdout);
 		free(tmp);
 	}
-	free(displn);
 	return chain;
 }
 
@@ -191,4 +196,18 @@ void set_up_keypad() {
 	key[3][3] = 'D';
 
 
+}
+
+
+void output_chain(char* chain){
+	char* displn = (char*)malloc(21*sizeof(char));
+	printf("Lleva presionado %s \n",chain);
+	if(!strcmp(chain,"")){
+		display_write_last("Lleva presionado ");
+		free(displn);
+		return;
+	}
+	sprintf(displn,"Ha elegido: %s",chain);
+	display_write_last(displn);
+	free(displn);
 }

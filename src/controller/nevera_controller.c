@@ -11,7 +11,6 @@ int buy_stuff(nevera_fsm_t* nevera,int id);
 
 ///////FSM TABLE FUNCTIONS//////
 //CONDITION FUNCTIONS
-//TODO: HACER FUNCIONES DE CONDICION
 static int input_condition_func_start(fsm_t* fsm);
 static int input_condition_func_wait_for_option(fsm_t* fsm);
 static int input_condition_func_add_money(fsm_t* fsm);
@@ -19,15 +18,16 @@ static int input_condition_func_check_money(fsm_t* fsm);
 static int input_condition_func_buy_something(fsm_t* fsm);
 static int input_condition_func_add_product(fsm_t* fsm);
 static int input_condition_func_return_wait_for_user(fsm_t* fsm);
+static int input_condition_func_commit(fsm_t* fsm);
 
 //OUTPUT FUNCTIONS
-//TODO Declaración de funciones OUTPUT de la máquina de estados. Se ejecutan cuando se alcanza el estado.
 static void output_func_wait_for_user(fsm_t* fsm);
 static void output_func_wait_for_option(fsm_t* fsm);
 static void output_func_add_money(fsm_t* fsm);
 static void output_func_check_money(fsm_t* fsm);
 static void output_func_buy_something(fsm_t* fsm);
 static void output_func_add_product(fsm_t* fsm);
+static void output_func_commit(fsm_t* fsm);
 
 fsm_trans_t nevera_transition_table[] = {
 		{START, input_condition_func_start,WAIT_FOR_USER,output_func_wait_for_user},
@@ -36,11 +36,12 @@ fsm_trans_t nevera_transition_table[] = {
 		{WAIT_FOR_OPTION,input_condition_func_check_money,CHECK_MONEY,output_func_check_money},
 		{WAIT_FOR_OPTION,input_condition_func_buy_something,BUY_SOMETHING,output_func_buy_something},
 		{WAIT_FOR_OPTION,input_condition_func_add_product,ADD_PRODUCT,output_func_add_product},
-		{WAIT_FOR_OPTION,input_condition_func_return_wait_for_user,WAIT_FOR_USER,output_func_wait_for_user},
-		{CHECK_MONEY,input_condition_func_return_wait_for_user,WAIT_FOR_OPTION,output_func_wait_for_option},
-		{BUY_SOMETHING,input_condition_func_return_wait_for_user,WAIT_FOR_OPTION,output_func_wait_for_option},
-		{ADD_PRODUCT,input_condition_func_return_wait_for_user,WAIT_FOR_OPTION,output_func_wait_for_option},
-		{ADD_MONEY,input_condition_func_return_wait_for_user,WAIT_FOR_OPTION,output_func_wait_for_option},
+		{WAIT_FOR_OPTION,input_condition_func_commit,COMMIT,output_func_commit},
+		{COMMIT,input_condition_func_return_wait_for_user,WAIT_FOR_USER,output_func_wait_for_user},
+		{CHECK_MONEY,input_condition_func_wait_for_option,WAIT_FOR_OPTION,output_func_wait_for_option},
+		{BUY_SOMETHING,input_condition_func_wait_for_option,WAIT_FOR_OPTION,output_func_wait_for_option},
+		{ADD_PRODUCT,input_condition_func_wait_for_option,WAIT_FOR_OPTION,output_func_wait_for_option},
+		{ADD_MONEY,input_condition_func_wait_for_option,WAIT_FOR_OPTION,output_func_wait_for_option},
 		{-1, NULL, -1, NULL },
 };
 
@@ -96,33 +97,46 @@ static int input_condition_func_add_product(fsm_t* fsm){
 		return 1;
 	return 0;
 }
-static int input_condition_func_return_wait_for_user(fsm_t* fsm){
+static int input_condition_func_commit(fsm_t* fsm){
 	nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
 	if (nevera->option_selected == 4)
-		nevera->user_selected = NULL;
 		return 1;
 	return 0;
 }
 
-//OUTPUT FUNCTIONS
-//TODO Declaración de funciones OUTPUT de la máquina de estados. Se ejecutan cuando se alcanza el estado.
-static void output_func_wait_for_user(fsm_t* fsm){
-		nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
-		display_user_menu();
-		nevera->intro = scan_chain(10);
-		nevera->user_selected = usuario_list_search(nevera->lista_usuarios,atoi(nevera->intro));
-		nevera->option_selected = -1;
-		nevera->intro = "";
+static int input_condition_func_return_wait_for_user(fsm_t* fsm){
+	return 1;
 }
 
+//OUTPUT FUNCTIONS
+//TODO: SCAN_CHAIN NO BORRA
+static void output_func_wait_for_user(fsm_t* fsm){
+		nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
+		int id = 0;
+		while(1){
+			display_user_menu();
+			id = scan_num();
+			nevera->user_selected = usuario_list_search(nevera->lista_usuarios,id);
+			if(nevera->user_selected != NULL)
+				break;
+			display_user_error();
+		}
+		nevera->option_selected = -1;
+		nevera->intro = "";
+		display_user_selected(nevera->user_selected->nombre);
+}
+//TODO: ADD ERROR LINE
 static void output_func_wait_for_option(fsm_t* fsm){
 	int option = -1;
 	nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
 	display_options_menu();
 	while(1){
 		option = scan_num();
-		if(option > 0 && option < 5)
+		if(option > 0 && option < 5){
 			break;
+		}
+		display_options_error();
+		display_options_menu();
 	}
 
 	nevera->option_selected = option;
@@ -130,16 +144,20 @@ static void output_func_wait_for_option(fsm_t* fsm){
 
 static void output_func_add_money(fsm_t* fsm){
 	nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
+	display_add_money_menu();
 	add_saldo(nevera->user_selected,scan_float());
+	display_total_money(nevera->user_selected->saldo);
+	scan_key();
 	nevera->option_selected = -1;
 }
 static void output_func_check_money(fsm_t* fsm){
 	nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
-	display_check_money_menu(nevera->user_selected);
+	display_total_money(nevera->user_selected->saldo);
 	scan_key();
 	nevera->option_selected = -1;
 }
 
+//TODO: ADD DELETE SCAN_CHAIN
 static void output_func_buy_something(fsm_t* fsm){
 	nevera_fsm_t* nevera = (nevera_fsm_t*) fsm;
 	int i = 0;
@@ -165,6 +183,13 @@ static void output_func_buy_something(fsm_t* fsm){
 	free(intro);
 
 }
+
+static void output_func_commit(fsm_t* fsm){
+	nevera_fsm_t* nevera = (nevera_fsm_t*)fsm;
+	nevera->user_selected = NULL;
+	commit_db(nevera->db,nevera->lista_usuarios,nevera->lista_productos);
+}
+
 static void output_func_add_product(fsm_t* fsm){
 
 }

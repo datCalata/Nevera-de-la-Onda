@@ -24,7 +24,8 @@ typedef enum fsm_state{
 	ADD_MONEY = 3,
 	CHECK_MONEY = 4,
 	BUY_SOMETHING = 5,
-	ADD_PRODUCT = 6
+	ADD_PRODUCT = 6,
+	COMMIT = 7
 }fsm_state_t;
 
 typedef struct nevera_fsm{

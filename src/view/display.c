@@ -27,39 +27,65 @@ void write_display(char* ln1, char* ln2, char* ln3, char* ln4) {
 		lcdLoc(LINE3);
 		typeln(ln3);
 	}
-	if (ln3 != NULL) {
-		lcdLoc(LINE3);
-		typeln(ln3);
+	if (ln4 != NULL) {
+		lcdLoc(LINE4);
+		typeln(ln4);
 	}
 }
 
 void display_user_menu() {
-	display_clear();
-	lcdLoc(LINE1);
-	typeln("Introduzca su numero de usuario");
+	ClrLcd();
+	static char* ln1 = "Introduce tu numero";
+	static char* ln2 = "de usuario";
+	write_display(ln1,ln2,NULL,NULL);
+}
+
+void display_user_selected(char* user){
+	ClrLcd();
+	char* ln1 = (char*)malloc(21*sizeof(char));
+	sprintf(ln1,"Hola %s",user);
+	write_display(ln1,NULL,NULL,NULL);
+	delay(1000);
+}
+
+void display_options_error(){
+	ClrLcd();
+	static char* ln1 = "Opcion erronea";
+	write_display(ln1,NULL,NULL,NULL);
+	delay(1000);
 }
 
 void display_options_menu() {
-	char* ln1 = "1) METER DINERO";
-	char* ln2 = "2) VER DINERO";
-	char* ln3 = "3) COMPRAR";
-	char* ln4 = "4) SALIR";
+	ClrLcd();
+	static char* ln1 = "1) METER DINERO";
+	static char* ln2 = "2) VER DINERO";
+	static char* ln3 = "3) COMPRAR";
+	static char* ln4 = "4) SALIR";
 	write_display(ln1,ln2,ln3,ln4);
 }
 
-void display_add_money_menu(int total) {
-
+void display_add_money_menu(){
+	ClrLcd();
+	char* ln1 = "Teclea cuanto anades";
+	write_display(ln1,NULL,NULL,NULL);
+}
+void display_total_money(float saldo){
+	ClrLcd();
+	static char* ln1 = "Dispone de:";
+	char* ln2 = (char*)malloc(21*sizeof(char));
+	static char* ln3 = "pulse una tecla";
+	static char* ln4 = "para salir";
+	strcpy(ln2,"");
+	sprintf(ln2," %2.2f euros",saldo);
+	write_display(ln1,ln2,ln3,ln4);
 }
 
-void display_check_money_menu(user_t* usuario) {
-	display_clear();
-	char* ln1 = (char*) malloc(21 * sizeof(char));
-	char* ln2 = (char*) malloc(21 * sizeof(char));
-	snprintf(ln1, 21, FORMAT_CHECK_MONEY_1, usuario->nombre);
-	snprintf(ln2, 21, FORMAT_CHECK_MONEY_2, usuario->saldo);
+void display_user_error(){
+	ClrLcd();
+	static char* ln1 = "El id de usuario";
+	static char* ln2 = "No existe";
 	write_display(ln1,ln2,NULL,NULL);
-	free(ln1);
-	free(ln2);
+	delay(1000);
 }
 
 void display_buy_menu(void *t, int current_id) {
@@ -106,5 +132,5 @@ void display_clear() {
 	typeln("");
 	lcdLoc(LINE4);
 	typeln("");
-	delay(50);
+	delay(500);
 }
